@@ -49,7 +49,7 @@ class RegisterCommand {
     }
 
     private fun openBrowser(s: CommandContext<ServerCommandSource>) {
-        s.source.sendFeedback(Text.literal("not available"), false)
+        s.source.sendFeedback(Text.literal("§3[MultiAuth]§4Not Available"), false)
 //        OnlineModeCheckUtil().openBrowser(
 //            "https://login.live.com/oauth20_authorize.srf\n" + "?client_id=00000000402b5328\n" + "&response_type=code\n" + "&scope=service::user.auth.xboxlive.com::MBI_SSL\n" + "&redirect_uri=https://login.live.com/oauth20_desktop.srf"
 //        )

@@ -23,10 +23,15 @@ class LoginCommand {
         val source = s.source.player
         if (playerStatus?.isLoggedIn() == true) {
             source?.sendMessage(Text.literal("§3[MultiAuth]§4你已经登录过了!"))
+            return
         } else if (playerStatus?.isExists() == false) {
             source?.sendMessage(Text.literal("§3[MultiAuth]§4该账号不存在请先使用/register注册!"))
+            return
         } else if (playerStatus?.isCorrectPassword(password) == true) {
             source?.sendMessage(Text.literal("§3[MultiAuth]§a登陆成功!"))
+            source?.isInvulnerable = false
+            playerStatus.setLogged(true)
+            return
         } else {
             source?.sendMessage(Text.literal("§3[MultiAuth]§4密码错误!"))
         }
