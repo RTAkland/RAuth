@@ -1,11 +1,10 @@
-package cn.rtast.multiauth.mixins;
+package cn.rtast.rauth.mixins;
 
-import cn.rtast.multiauth.listeners.OnPlayerConnect;
-import cn.rtast.multiauth.listeners.OnPlayerLeave;
+import cn.rtast.rauth.listeners.OnPlayerConnect;
+import cn.rtast.rauth.listeners.OnPlayerLeave;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

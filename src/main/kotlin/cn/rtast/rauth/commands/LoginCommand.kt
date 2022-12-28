@@ -1,6 +1,6 @@
-package cn.rtast.multiauth.commands
+package cn.rtast.rauth.commands
 
-import cn.rtast.multiauth.utils.PlayerStatusUtil
+import cn.rtast.rauth.utils.PlayerStatusUtil
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType.*
 import com.mojang.brigadier.context.CommandContext

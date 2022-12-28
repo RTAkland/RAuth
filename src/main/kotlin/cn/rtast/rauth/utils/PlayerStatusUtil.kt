@@ -1,10 +1,9 @@
-package cn.rtast.multiauth.utils
+package cn.rtast.rauth.utils
 
-import cn.rtast.multiauth.models.RegisteredPlayersModel
+import cn.rtast.rauth.models.RegisteredPlayersModel
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import java.io.File
-
 
 open class PlayerStatusUtil(
     private val username: String
@@ -83,11 +82,15 @@ open class PlayerStatusUtil(
         username: String,
         password: String,
         uuid: String,
-        isOnlineMode: Boolean,
         isLoggedIn: Boolean
     ) {
-        allUsers.add(RegisteredPlayersModel(username, password, uuid, isOnlineMode, isLoggedIn))
+        allUsers.add(RegisteredPlayersModel(username, password, uuid, isLoggedIn))
         save()
+    }
+
+    fun getUUID(): String {
+        val data = getIndexOfData()
+        return data?.uuid.toString()
     }
 
     fun setLogged(state: Boolean) {
@@ -103,11 +106,6 @@ open class PlayerStatusUtil(
     fun isLoggedIn(): Boolean {
         val data = getIndexOfData()
         return data?.isLoggedIn ?: false
-    }
-
-    fun isOnlineMode(): Boolean {
-        val data = getIndexOfData()
-        return data?.isOnlineMode ?: false
     }
 
     fun isCorrectPassword(password: String): Boolean {

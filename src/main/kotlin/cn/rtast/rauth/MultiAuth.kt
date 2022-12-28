@@ -1,9 +1,9 @@
-package cn.rtast.multiauth
+package cn.rtast.rauth
 
-import cn.rtast.multiauth.commands.LoginCommand
-import cn.rtast.multiauth.commands.LogoutCommand
-import cn.rtast.multiauth.commands.RegisterCommand
-import cn.rtast.multiauth.utils.PlayerStatusUtil
+import cn.rtast.rauth.commands.LoginCommand
+import cn.rtast.rauth.commands.LogoutCommand
+import cn.rtast.rauth.commands.RegisterCommand
+import cn.rtast.rauth.utils.PlayerStatusUtil
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import java.io.File

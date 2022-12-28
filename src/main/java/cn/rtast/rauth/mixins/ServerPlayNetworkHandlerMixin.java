@@ -1,8 +1,8 @@
-package cn.rtast.multiauth.mixins;
+package cn.rtast.rauth.mixins;
 
-import cn.rtast.multiauth.listeners.OnChatMessage;
-import cn.rtast.multiauth.listeners.OnPlayerAction;
-import cn.rtast.multiauth.listeners.OnPlayerMove;
+import cn.rtast.rauth.listeners.OnChatMessage;
+import cn.rtast.rauth.listeners.OnPlayerAction;
+import cn.rtast.rauth.listeners.OnPlayerMove;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;

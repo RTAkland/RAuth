@@ -1,6 +1,6 @@
-package cn.rtast.multiauth.listeners
+package cn.rtast.rauth.listeners
 
-import cn.rtast.multiauth.utils.PlayerStatusUtil
+import cn.rtast.rauth.utils.PlayerStatusUtil
 import net.minecraft.server.network.ServerPlayNetworkHandler
 
 class OnPlayerMove {

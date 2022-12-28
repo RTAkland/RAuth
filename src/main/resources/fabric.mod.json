@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "multi-auth",
+  "id": "rauth",
   "version": "${version}",
-  "name": "MultiAuth",
-  "description": "服务端mod添加/login命令, 正版玩家和离线玩家都能使用, 正版玩家验证后可以跳过/login命令. 使用离线uuid",
+  "name": "RAuth",
+  "description": "为服务器添加/login命令",
   "authors": [
     "RTAkland"
   ],
@@ -11,13 +11,13 @@
     "repo": "https://github.com/Dangotown/MultiAuth"
   },
   "license": "MIT",
-  "icon": "assets/multiauth/icon.png",
+  "icon": "assets/rauth/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
       {
         "adapter": "kotlin",
-        "value": "cn.rtast.multiauth.MultiAuth"
+        "value": "cn.rtast.rauth.MultiAuth"
       }
     ]
   },
