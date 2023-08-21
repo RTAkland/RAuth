@@ -3,30 +3,30 @@
   "id": "rauth",
   "version": "${version}",
   "name": "RAuth",
-  "description": "为服务器添加/login命令",
+  "description": "在服务器上使用多种登录方式",
   "authors": [
     "RTAkland"
   ],
   "contact": {
-    "repo": "https://github.com/Dangotown/MultiAuth"
+    "repo": "https://github.com/RTAkland/RAuth"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "icon": "assets/rauth/icon.png",
-  "environment": "*",
+  "environment": "server",
   "entrypoints": {
     "main": [
       {
         "adapter": "kotlin",
-        "value": "cn.rtast.rauth.MultiAuth"
+        "value": "cn.rtast.rauth.RAuth"
       }
     ]
   },
   "mixins": [
-    "Multi-Auth.mixins.json"
+    "rauth.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.8",
+    "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": "1.19"
+    "minecraft": "${minecraft_version}"
   }
 }
