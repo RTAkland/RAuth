@@ -29,14 +29,16 @@ class MinecraftAccount {
 
     private val header = mapOf("Content-Type" to "application/json")
 
-    fun getBearerToken(xstsData: XBoxLiveAuth.XBoxLiveAuthResponse) {
+    fun getBearerToken(xstsData: XBoxLiveAuth.XBoxLiveAuthResponse): Profile {
         val uhs = xstsData.DisplayClaims.xui.first().uhs
         val token = xstsData.Token
         val requestBody = FormBody.Builder()
             .add("identityToken", "XBL3.0%20x=$uhs;$token")
-            .add("ensureLegacyEnabled", "true")
             .build()
-        val response = Http.post(MC_BEARER_TOKEN_URL, requestBody, this.header)
+        return gson.fromJson(
+            Http.post(MC_BEARER_TOKEN_URL, requestBody, this.header).body.string(),
+            Profile::class.java
+        )
     }
 
     data class Profile(

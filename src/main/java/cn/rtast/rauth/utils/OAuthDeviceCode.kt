@@ -22,7 +22,7 @@ import okhttp3.FormBody
 
 class OAuthDeviceCode {
     companion object {
-        const val CLIENT_ID = "0effb02d-8381-48c5-8f45-e7eea4d85424"
+        const val CLIENT_ID = "204cefd1-4818-4de1-b98d-513fae875d88"
         const val DEVICE_CODE_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode"
         const val TOKEN_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
     }
@@ -41,10 +41,10 @@ class OAuthDeviceCode {
         return gson.fromJson(response.body.string(), DeviceCode::class.java)
     }
 
-    fun confirmVerification(deviceCode: DeviceCode): DeviceAccessToken {
+    fun confirmVerification(deviceCode: String): DeviceAccessToken {
         val requestBody = FormBody.Builder()
             .add("grant_type", "urn:ietf:params:oauth:grant-type:device_code")
-            .add("device_code", deviceCode.device_code)
+            .add("device_code", deviceCode)
             .add("client_id", CLIENT_ID)
             .add("scope", "XBoxLive.signin%20offline_access")
             .build()
