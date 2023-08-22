@@ -1,4 +1,4 @@
-name: Build RMusic
+name: Build RAuth
 on:
   - push
   - pull_request
