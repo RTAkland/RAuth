@@ -13,15 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package cn.rtast.rauth
 
-import cn.rtast.rauth.commands.LoginCommand
-import net.fabricmc.api.ModInitializer
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
+package cn.rtast.rauth.exceptions
 
-class RAuth : ModInitializer {
-
-    override fun onInitialize() {
-        CommandRegistrationCallback.EVENT.register(LoginCommand())
-    }
-}
+class OAuthException(message: String): Exception(message)

@@ -21,39 +21,22 @@ import okhttp3.FormBody
 
 class MinecraftAccount {
     companion object {
-        const val MINECRAFT_SERVICE_URL = "https://api.minecraftservices.com/authentication/login_with_xbox"
-        const val MINECRAFT_ACCOUNT_CHECK_URL = "https://api.minecraftservices.com/entitlements/mcstore"
+        const val MC_BEARER_TOKEN_URL = "https://api.minecraftservices.com/authentication/login_with_xbox"
+
     }
 
     private val gson = Gson()
 
-    fun getAccessToken(xstsAuthToken: XBoxLiveAuth.XBoxLiveAuthModel): Profile {
+    private val header = mapOf("Content-Type" to "application/json")
+
+    fun getBearerToken(xstsData: XBoxLiveAuth.XBoxLiveAuthResponse) {
+        val uhs = xstsData.DisplayClaims.xui.first().uhs
+        val token = xstsData.Token
         val requestBody = FormBody.Builder()
-            .add(
-                "identityToken",
-                "XBL3.0 x=${xstsAuthToken.DisplayClaims.xui.first().uhs};${xstsAuthToken.Token}"
-            )
+            .add("identityToken", "XBL3.0%20x=$uhs;$token")
             .add("ensureLegacyEnabled", "true")
             .build()
-        val response = Http.post(MINECRAFT_SERVICE_URL, requestBody, null)
-        return gson.fromJson(response, Profile::class.java)
-    }
-
-    fun hasMinecraftProfile(profile: Profile): Boolean {
-        return false
-    }
-
-    fun login(code: String) {
-        try {
-            val oauthToken = OAuth2Flow().getMicrosoftAccessToken(code)
-            val response = XBoxLiveAuth().getXBoxLiveAuthResponse(oauthToken)
-            val xstsAccessToken = XBoxLiveAuth().getXSTSAuthAccessToken(response)
-            val accessToken = getAccessToken(xstsAccessToken)
-            println(accessToken)
-        } catch (error: Exception) {
-            error.printStackTrace()
-        }
-
+        val response = Http.post(MC_BEARER_TOKEN_URL, requestBody, this.header)
     }
 
     data class Profile(

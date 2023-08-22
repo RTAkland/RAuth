@@ -16,83 +16,95 @@
 
 package cn.rtast.rauth.utils
 
-import cn.rtast.rauth.entities.MicrosoftAccessToken
+import cn.rtast.rauth.exceptions.MicrosoftAccountException
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 
 class XBoxLiveAuth {
-
     companion object {
-        const val XBOX_LIVE_AUTH_URL = "https://user.auth.xboxlive.com/user/authenticate"
-        const val XSTS_AUTH_URL = "https://xsts.auth.xboxlive.com/xsts/authorize"
+        const val XBOX_AUTH_URL = "https://user.auth.xboxlive.com/user/authenticate"
     }
 
     private val gson = Gson()
+
     private val header = mapOf(
         "Content-Type" to "application/json",
         "Accept" to "application/json"
     )
 
-    fun getXBoxLiveAuthResponse(accessToken: MicrosoftAccessToken): XBoxLiveAuthModel {
-        // Step 2
-        val properties = Properties(
+    fun authXBoxLive(accessToken: OAuthDeviceCode.DeviceAccessToken): XBoxLiveAuthResponse {
+        val properties = PropertiesXBox(
             "RPS",
             "user.auth.xboxlive.com",
             "d=${accessToken.access_token}"
         )
-        val requestBodyData = RequestBodyData(
+        val requestBodyData = XBoxLiveAuth(
             properties,
             "http://auth.xboxlive.com",
             "JWT"
         )
         val requestBodyJson = gson.toJson(requestBodyData)
         val requestBody = requestBodyJson.toRequestBody("application/json".toMediaType())
-        val response = Http.post(XBOX_LIVE_AUTH_URL, requestBody, this.header)
-        return gson.fromJson(response, XBoxLiveAuthModel::class.java)
+        return gson.fromJson(
+            Http.post(XBOX_AUTH_URL, requestBody, this.header).body.string(),
+            XBoxLiveAuthResponse::class.java
+        )
     }
 
-    fun getXSTSAuthAccessToken(xblToken: XBoxLiveAuthModel): XBoxLiveAuthModel {
-        // Step 3
-        val propertiesXSTS = PropertiesXSTS(
+    fun authXSTS(token: XBoxLiveAuthResponse): XBoxLiveAuthResponse {
+        val properties = PropertiesXSTS(
             "RETAIL",
-            listOf(xblToken.Token)
+            listOf(token.Token)
         )
-        val requestBodyData = RequestBodyDataXSTS(
-            propertiesXSTS,
+        val requestBodyData = XSTSAuth(
+            properties,
             "rp://api.minecraftservices.com/",
             "JWT"
         )
         val requestBodyJson = gson.toJson(requestBodyData)
         val requestBody = requestBodyJson.toRequestBody("application/json".toMediaType())
-        val response = Http.post(XSTS_AUTH_URL, requestBody, this.header)
-        return gson.fromJson(response, XBoxLiveAuthModel::class.java)
+        val response = Http.post(XBOX_AUTH_URL, requestBody, this.header)
+        if (response.code != 200) {
+            val errResponse = gson.fromJson(response.body.string(), XErrResponse::class.java)
+            val errDescription = when (errResponse.XErr) {
+                MicrosoftErrorCode.NoXBoxAccount.code -> {
+                    MicrosoftErrorCode.NoXBoxAccount.description
+                }
+
+                MicrosoftErrorCode.AccountForbidden.code -> {
+                    MicrosoftErrorCode.AccountForbidden.description
+                }
+
+                MicrosoftErrorCode.AccountRequireAdultVerify.code,
+                MicrosoftErrorCode.AccountRequireAdultVerify2.code -> {
+                    MicrosoftErrorCode.AccountRequireAdultVerify.description
+                }
+
+                else -> {
+                    MicrosoftErrorCode.ChildAccount.description
+                }
+            }
+            throw MicrosoftAccountException("Microsoft account exception: $errDescription. Go to ${errResponse.Redirect} for help")
+        }
+        return gson.fromJson(response.body.string(), XBoxLiveAuthResponse::class.java)
     }
 
-    private data class PropertiesXSTS(
-        val SandboxId: String,
-        val UserTokens: List<String>
-    )
-
-    private data class RequestBodyDataXSTS(
-        val Properties: PropertiesXSTS,
-        val RelyingParty: String,
-        val TokenType: String
-    )
-
-    private data class Properties(
+    data class PropertiesXBox(
         val AuthMethod: String,
         val SiteName: String,
         val RpsTicket: String
     )
 
-    private data class RequestBodyData(
-        val Properties: Properties,
+    data class XBoxLiveAuth(
+        val Properties: PropertiesXBox,
         val RelyingParty: String,
         val TokenType: String
     )
 
-    data class XBoxLiveAuthModel(
+    data class XBoxLiveAuthResponse(
+        val IssueInstant: String,
+        val NotAfter: String,
         val Token: String,
         val DisplayClaims: DisplayClaims
     )
@@ -105,4 +117,29 @@ class XBoxLiveAuth {
         val uhs: String
     )
 
+    data class PropertiesXSTS(
+        val SandboxId: String,
+        val UserTokens: List<String>
+    )
+
+    data class XSTSAuth(
+        val Properties: PropertiesXSTS,
+        val RelyingParty: String,
+        val TokenType: String
+    )
+
+    data class XErrResponse(
+        val Identity: String,
+        val XErr: Long,
+        val Message: String,
+        val Redirect: String
+    )
+
+    enum class MicrosoftErrorCode(val code: Long, val description: String) {
+        NoXBoxAccount(2148916233, "This account don't have Xbox account."),
+        AccountForbidden(2148916235, "This account is forbidden."),
+        AccountRequireAdultVerify(2148916236, "This account requires adult verification (Korea)."),
+        AccountRequireAdultVerify2(2148916237, "This account requires adult verification (Korea)."),
+        ChildAccount(2148916238, "This account is a child account.")
+    }
 }

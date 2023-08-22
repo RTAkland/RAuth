@@ -14,8 +14,6 @@
  *    limitations under the License.
  */
 
-package cn.rtast.rauth.entities
+package cn.rtast.rauth.exceptions
 
-data class MicrosoftAccessToken(
-    val access_token: String
-)
+class MicrosoftAccountException(message: String): Exception(message)

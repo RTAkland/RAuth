@@ -20,19 +20,20 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.Response
 
 object Http {
 
     private val client = OkHttpClient.Builder().retryOnConnectionFailure(true).build()
 
-    fun get(url: String, params: Map<String, String>? = null, headers: Map<String, String>?): String {
+    fun get(url: String, params: Map<String, String>? = null, headers: Map<String, String>?): Response {
         val urlWithParams = buildUrlWithParams(url, params)
         val request = buildRequest(urlWithParams, headers)
 
         return executeRequest(request.build())
     }
 
-    fun post(url: String, requestBody: RequestBody, headers: Map<String, String>?): String {
+    fun post(url: String, requestBody: RequestBody, headers: Map<String, String>?): Response {
         val request = buildRequest(url, headers)
             .post(requestBody)
             .build()
@@ -64,11 +65,7 @@ object Http {
         return requestBuilder
     }
 
-    private fun executeRequest(request: Request): String {
-        val response = client.newCall(request).execute()
-        println(response.code)
-        val resp = response.body.string()
-        println(resp)
-        return resp
+    private fun executeRequest(request: Request): Response {
+        return client.newCall(request).execute()
     }
 }
