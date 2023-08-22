@@ -16,9 +16,6 @@
 
 package cn.rtast.rauth.commands
 
-import cn.rtast.rauth.utils.MinecraftAccount
-import cn.rtast.rauth.utils.OAuthDeviceCode
-import cn.rtast.rauth.utils.XBoxLiveAuth
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
@@ -39,27 +36,9 @@ class LoginCommand : CommandRegistrationCallback {
                     CommandManager.argument("password", StringArgumentType.string())
                         .executes { this.executeLogin(it, StringArgumentType.getString(it, "password"));1 }
                 )
-                .then(
-                    CommandManager.literal("confirm")
-                        .then(
-                            CommandManager.argument("device-code", StringArgumentType.string())
-                                .executes { exeCon(StringArgumentType.getString(it, "device-code"));1 }
-                        )
-                )
-
         )
     }
 
     private fun executeLogin(context: CommandContext<ServerCommandSource>, password: String) {
-        println(OAuthDeviceCode().getDeviceCode().user_code)
-//        println(OAuthDeviceCode().getDeviceCode().device_code)
-    }
-
-    private fun exeCon(deviceCode: String) {
-        val confim = OAuthDeviceCode().confirmVerification(deviceCode)
-        val xA = XBoxLiveAuth().authXBoxLive(confim)
-        val xsts = XBoxLiveAuth().authXSTS(xA)
-        val acc = MinecraftAccount().getBearerToken(xsts)
-        println(acc)
     }
 }

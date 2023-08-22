@@ -14,6 +14,14 @@
  *    limitations under the License.
  */
 
-package cn.rtast.rauth.commands
+package cn.rtast.rauth.utils
 
-class ResetPasswordCommand
+object EncryptionUtils {
+    val SALT = ConfigUtil.getProperties("Salt")
+
+
+    fun verifyPassword(password: String) {
+
+    }
+
+}

@@ -16,9 +16,35 @@
 
 package cn.rtast.rauth.utils
 
-import java.net.URI
+import com.google.gson.Gson
+import kotlin.random.Random
 
-fun URI.getCode(url: String): String {
-    // ext func
-    return url.split("?").last().split("&").first().split("code=").last()
+fun Any.toJsonString(): String {
+    // Any data class to json string
+    return Gson().toJson(this)
+}
+
+inline fun <reified T> String.fromJson(): T {
+    // String.fromJson<Example>()
+    val gson = Gson()
+    return gson.fromJson(this, T::class.java)
+}
+
+fun rnd(length: Int): String {
+    // generate a random string
+    val lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz"
+    val upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    val digits = "0123456789"
+    val symbols = "!@#$%^&*()-_=+[{]}|;:',<.>?/"
+
+    val allChars = lowerCaseLetters + upperCaseLetters + digits + symbols
+
+    val password = buildString {
+        repeat(length) {
+            val randomIndex = Random.nextInt(allChars.length)
+            append(allChars[randomIndex])
+        }
+    }
+
+    return password
 }

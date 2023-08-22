@@ -24,7 +24,7 @@ import okhttp3.Response
 
 object Http {
 
-    private val client = OkHttpClient.Builder().retryOnConnectionFailure(true).build()
+    private val client = OkHttpClient()
 
     fun get(url: String, params: Map<String, String>? = null, headers: Map<String, String>?): Response {
         val urlWithParams = buildUrlWithParams(url, params)

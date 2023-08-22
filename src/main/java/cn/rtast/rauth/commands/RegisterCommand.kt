@@ -33,12 +33,13 @@ class RegisterCommand : CommandRegistrationCallback {
         dispatcher.register(
             CommandManager.literal("register").then(
                 CommandManager.literal("online")
-                    .then(CommandManager.literal("browser").then(CommandManager.literal("confirm")
-                        .then(CommandManager.argument("url", StringArgumentType.string()).executes {
-                            this.executeRegisterConfirm(
-                                it, StringArgumentType.getString(it, "url")
-                            );1
-                        })
+                    .then(CommandManager.literal("browser").then(
+                        CommandManager.literal("confirm")
+                            .then(CommandManager.argument("url", StringArgumentType.string()).executes {
+                                this.executeRegisterConfirm(
+                                    it, StringArgumentType.getString(it, "url")
+                                );1
+                            })
                     ).executes { this.executeOpenBrowser(it);1 }).then(
                         CommandManager.literal("in-game").then(
                             CommandManager.argument("account", StringArgumentType.string())

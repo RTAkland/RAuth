@@ -21,24 +21,26 @@ import okhttp3.FormBody
 
 class MinecraftAccount {
     companion object {
-        const val MC_BEARER_TOKEN_URL = "https://api.minecraftservices.com/authentication/login_with_xbox"
-
+        const val MINECRAFT_SERVICE_URL = "https://api.minecraftservices.com/authentication/login_with_xbox"
+        const val OWNERSHIP_URL = "https://api.minecraftservices.com/entitlements/mcstore"
     }
 
     private val gson = Gson()
 
-    private val header = mapOf("Content-Type" to "application/json")
-
-    fun getBearerToken(xstsData: XBoxLiveAuth.XBoxLiveAuthResponse): Profile {
-        val uhs = xstsData.DisplayClaims.xui.first().uhs
-        val token = xstsData.Token
+    fun getAccessToken(xstsAuthToken: XBoxLiveAuth.XBoxLiveAuthResponse) {
         val requestBody = FormBody.Builder()
-            .add("identityToken", "XBL3.0%20x=$uhs;$token")
+            .add(
+                "identityToken",
+                "XBL3.0 x=${xstsAuthToken.DisplayClaims.xui.first().uhs};${xstsAuthToken.Token}"
+            )
+            .add("ensureLegacyEnabled", "true")
             .build()
-        return gson.fromJson(
-            Http.post(MC_BEARER_TOKEN_URL, requestBody, this.header).body.string(),
-            Profile::class.java
-        )
+        val response = Http.post(MINECRAFT_SERVICE_URL, requestBody, null)
+        println(response)
+    }
+
+    fun ownership(profile: Profile): Boolean {
+        return false
     }
 
     data class Profile(

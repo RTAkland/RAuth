@@ -24,6 +24,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 class XBoxLiveAuth {
     companion object {
         const val XBOX_AUTH_URL = "https://user.auth.xboxlive.com/user/authenticate"
+        const val XSTS_AUTH_URL = "https://xsts.auth.xboxlive.com/xsts/authorize"
     }
 
     private val gson = Gson()
@@ -39,15 +40,17 @@ class XBoxLiveAuth {
             "user.auth.xboxlive.com",
             "d=${accessToken.access_token}"
         )
-        val requestBodyData = XBoxLiveAuth(
+        val xboxLiveAuthModel = XBoxLiveAuthModel(
             properties,
             "http://auth.xboxlive.com",
             "JWT"
         )
-        val requestBodyJson = gson.toJson(requestBodyData)
-        val requestBody = requestBodyJson.toRequestBody("application/json".toMediaType())
         return gson.fromJson(
-            Http.post(XBOX_AUTH_URL, requestBody, this.header).body.string(),
+            Http.post(
+                XBOX_AUTH_URL,
+                xboxLiveAuthModel.toJsonString().toRequestBody("application/json".toMediaType()),
+                this.header
+            ).body.string(),
             XBoxLiveAuthResponse::class.java
         )
     }
@@ -57,14 +60,17 @@ class XBoxLiveAuth {
             "RETAIL",
             listOf(token.Token)
         )
-        val requestBodyData = XSTSAuth(
+        val xstsAuthModel = XSTSAuthModel(
             properties,
             "rp://api.minecraftservices.com/",
             "JWT"
         )
-        val requestBodyJson = gson.toJson(requestBodyData)
-        val requestBody = requestBodyJson.toRequestBody("application/json".toMediaType())
-        val response = Http.post(XBOX_AUTH_URL, requestBody, this.header)
+        val response =
+            Http.post(
+                XSTS_AUTH_URL,
+                xstsAuthModel.toJsonString().toRequestBody("application/json;charset=utf-8".toMediaType()),
+                this.header
+            )
         if (response.code != 200) {
             val errResponse = gson.fromJson(response.body.string(), XErrResponse::class.java)
             val errDescription = when (errResponse.XErr) {
@@ -96,7 +102,7 @@ class XBoxLiveAuth {
         val RpsTicket: String
     )
 
-    data class XBoxLiveAuth(
+    data class XBoxLiveAuthModel(
         val Properties: PropertiesXBox,
         val RelyingParty: String,
         val TokenType: String
@@ -122,7 +128,7 @@ class XBoxLiveAuth {
         val UserTokens: List<String>
     )
 
-    data class XSTSAuth(
+    data class XSTSAuthModel(
         val Properties: PropertiesXSTS,
         val RelyingParty: String,
         val TokenType: String

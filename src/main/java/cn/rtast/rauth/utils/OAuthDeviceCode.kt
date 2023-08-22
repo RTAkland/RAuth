@@ -22,7 +22,7 @@ import okhttp3.FormBody
 
 class OAuthDeviceCode {
     companion object {
-        const val CLIENT_ID = "204cefd1-4818-4de1-b98d-513fae875d88"
+        const val CLIENT_ID = "750bee5c-2783-42bf-93a0-1ecc3af22fb4"
         const val DEVICE_CODE_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode"
         const val TOKEN_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/token"
     }
@@ -32,24 +32,26 @@ class OAuthDeviceCode {
     private val header = mapOf("Content-Type" to "application/x-www-form-urlencoded")
 
     fun getDeviceCode(): DeviceCode {
-        val requestBody = FormBody.Builder()
+        val deviceCode = FormBody.Builder()
             .add("client_id", CLIENT_ID)
-            .add("scope", "XBoxLive.signin%20offline_access")
+            .add("scope", "XBoxLive.signin offline_access")
             .build()
 
-        val response = Http.post(DEVICE_CODE_URL, requestBody, this.header)
+        val response = Http.post(DEVICE_CODE_URL, deviceCode, null)
+        println(response)
         return gson.fromJson(response.body.string(), DeviceCode::class.java)
     }
 
     fun confirmVerification(deviceCode: String): DeviceAccessToken {
-        val requestBody = FormBody.Builder()
+        val oauthDeviceCodeVerifyModel = FormBody.Builder()
             .add("grant_type", "urn:ietf:params:oauth:grant-type:device_code")
             .add("device_code", deviceCode)
             .add("client_id", CLIENT_ID)
             .add("scope", "XBoxLive.signin%20offline_access")
             .build()
 
-        val response = Http.post(TOKEN_URL, requestBody, this.header)
+
+        val response = Http.post(TOKEN_URL, oauthDeviceCodeVerifyModel, this.header)
 
         if (response.code != 200) {
             val exceptionMessage = gson.fromJson(response.body.string(), DeviceAccessTokenException::class.java)

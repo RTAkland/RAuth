@@ -16,12 +16,20 @@
 package cn.rtast.rauth
 
 import cn.rtast.rauth.commands.LoginCommand
+import cn.rtast.rauth.utils.ConfigUtil
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
+import java.io.File
 
 class RAuth : ModInitializer {
 
     override fun onInitialize() {
+
+        ConfigUtil.init()
+        if (!File("./pm.json").exists()) {
+            File("./pm.json").createNewFile()
+        }
+
         CommandRegistrationCallback.EVENT.register(LoginCommand())
     }
 }

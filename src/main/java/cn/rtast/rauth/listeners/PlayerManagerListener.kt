@@ -18,11 +18,17 @@ package cn.rtast.rauth.listeners
 
 import net.minecraft.network.ClientConnection
 import net.minecraft.server.network.ServerPlayerEntity
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 
 class PlayerManagerListener {
     fun onPlayerConnect(connection: ClientConnection, player: ServerPlayerEntity) {
+        val username = player.name.string
+        val uuid = player.uuid
 
+        println(player.gameProfile.id)
+        println(player.gameProfile.properties)
+        println(player.gameProfile.name)
+        println(player.gameProfile.isComplete)
+        println(player.gameProfile.isLegacy)
     }
 
     fun onPlayerDisconnect(player: ServerPlayerEntity) {
